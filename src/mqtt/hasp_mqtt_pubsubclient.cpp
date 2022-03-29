@@ -239,9 +239,19 @@ void mqttStart()
     snprintf_P(buffer, sizeof(buffer), PSTR("%s" MQTT_TOPIC_LWT), mqttNodeTopic); // lastWillTopic
     snprintf_P(lastWillPayload, sizeof(lastWillPayload), PSTR("offline"));        // lastWillPayload
 
+// +AIRQ 1.3 - Remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
     haspProgressMsg(F(D_MQTT_CONNECTING));
     haspProgressVal(mqttReconnectCount * 5);
+<<<<<<< Updated upstream
     if(!mqttClient.connect(mqttClientId, mqttUsername, mqttPassword, buffer, 0, true, lastWillPayload, true)) {
+=======
+// +AIRQ 1.3 - Remove GUI
+#endif
+// -AIRQ 1.3 - Remove GUI
+    if(!mqttClient.connect(mqttClientId, mqttUser, mqttPassword, buffer, 0, true, lastWillPayload, true)) {
+>>>>>>> Stashed changes
         // Retry until we give up and restart after connectTimeout seconds
         mqttReconnectCount++;
 
@@ -331,7 +341,13 @@ void mqttStart()
     mqttReconnectCount = 0;
 
     haspReconnect();
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI    
     haspProgressVal(255);
+// +AIRQ 1.3 - Remove GUI
+#endif
+// -AIRQ 1.3 - Remove GUI
 
     dispatch_current_state(TAG_MQTT);
 }

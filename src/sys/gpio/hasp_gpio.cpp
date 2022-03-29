@@ -44,11 +44,17 @@ uint8_t pwm_channel = 1; // Backlight has 0
 
 static inline void gpio_input_event(uint8_t pin, hasp_event_t eventid);
 
+// +AIRQ 1.3 - Remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
 static inline void gpio_update_group(uint8_t group, lv_obj_t* obj, bool power, int32_t val, int32_t min, int32_t max)
 {
     hasp_update_value_t value = {.obj = obj, .group = group, .min = min, .max = max, .val = val, .power = power};
     dispatch_normalized_group_values(value);
 }
+// +AIRQ 1.3 - Remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
 
 #if defined(ARDUINO_ARCH_ESP32)
 #include "driver/uart.h"
@@ -133,9 +139,15 @@ static void gpio_event_handler(AceButton* button, uint8_t eventType, uint8_t but
     gpioConfig[btnid].power = Parser::get_event_state(eventid);
     gpio_input_event(gpioConfig[btnid].pin, eventid);
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     // update objects and gpios in this group
     if(gpioConfig[btnid].group && eventid != HASP_EVENT_LONG) // do not repeat DOWN + LONG
         gpio_update_group(gpioConfig[btnid].group, NULL, gpioConfig[btnid].power, state, HASP_EVENT_OFF, HASP_EVENT_ON);
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 }
 
 /* ********************************* GPIO Setup *************************************** */
@@ -567,6 +579,9 @@ static bool gpio_set_output_value(hasp_gpio_config_t* gpio, bool power, uint16_t
     }
 }
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 // Update the normalized value of one pin
 static void gpio_set_normalized_value(hasp_gpio_config_t* gpio, hasp_update_value_t& value)
 {
@@ -604,6 +619,9 @@ static void gpio_set_normalized_value(hasp_gpio_config_t* gpio, hasp_update_valu
 
     gpio_set_output_value(gpio, value.power, val); // recalculated
 }
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 // Dispatch all group member values
 void gpio_output_group_values(uint8_t group)
@@ -615,6 +633,9 @@ void gpio_output_group_values(uint8_t group)
     }
 }
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 // SHOULD only by called from DISPATCH
 // Update the normalized value of all group members
 // Does not procude logging output
@@ -632,6 +653,9 @@ void gpio_set_normalized_group_values(hasp_update_value_t& value)
 
     // object_set_normalized_group_values(group, NULL, val, min, max); // Update onsreen objects
 }
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 // Update the value of an output pin and its group members
 bool gpio_set_pin_state(uint8_t pin, bool power, int32_t val)
@@ -652,6 +676,9 @@ bool gpio_set_pin_state(uint8_t pin, bool power, int32_t val)
         val = power;     // val and power are equal
     }
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     if(gpio->group) {
         // update objects and gpios in this group
         gpio->power = power;
@@ -659,6 +686,9 @@ bool gpio_set_pin_state(uint8_t pin, bool power, int32_t val)
         gpio_update_group(gpio->group, NULL, gpio->power, gpio->val, 0, gpio->max);
 
     } else {
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
         // update this gpio value only
         if(gpio_set_output_value(gpio, power, val)) {
             gpio_output_state(gpio);
@@ -666,7 +696,13 @@ bool gpio_set_pin_state(uint8_t pin, bool power, int32_t val)
         } else {
             return false;
         }
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     }
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
     return true; // pin found and set
 }

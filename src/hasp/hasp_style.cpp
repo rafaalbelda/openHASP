@@ -3,6 +3,9 @@
 
 #include "hasp_attribute.h" /*To see all the hashes*/
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 static void set_style_attribute(lv_style_t * style, lv_state_t state, int16_t val)
 {
     lv_color_t color;
@@ -227,3 +230,6 @@ static void set_style_attribute(lv_style_t * style, lv_state_t state, int16_t va
         default:;
     }
 }
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI

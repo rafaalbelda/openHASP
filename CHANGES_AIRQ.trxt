@@ -1,0 +1,116 @@
+1 - new board ESP8266 without screen (d1-mini-esp8266)
+    1.1 - new file: user_setups/d1-mini-esp8266.ini
+    1.2 - modify platform:override.ini 
+        [env:d1-mini-esp8266]
+        ad entry at extra_default_envs: d1-mini-esp8266
+    1.3 Remove GUI
+        - new define HASP_USE_GUI to control de GUI
+            - hasp_gui.cpp/hasp_gui.h
+            - hasp_http.cpp (dispatch_calibrate)
+            - hasp_dispatch.cpp 
+                remove dispatch_screenshot --> edit dispatchSetup
+                edit dispatch_config
+            - hasp_oobe.cpp 
+                remove almost all
+            - hasp_http.cpp
+                remove screenshot
+                    remove webHandleScreenshot
+                    edit httpSetup
+                saveConfig
+                    remove gui
+                webHandleGuiConfig
+                    removeedit httpSetup
+                webHandleGpioInput
+                    remove guiGetConfig
+                webHandleGpioOutput
+                    remove guiGetConfig
+                webHandleInfo
+                webHandleRoot
+                    remove "Screenshot"  & "HASP design" buttons
+                webHandleConfig
+                    remove "Config Screen" button
+            - hasp_config.cpp
+                remove GUI
+                    configSetup
+                    configWrite
+            - main_arduino.cpp 
+                call to guiSetup()
+                call to guiLoop()
+            - hasp_hasp.cpp
+                edit haspSetup
+            - hasp.cpp/hasp.h
+                remove all lv_* variables
+                remove hasp_get_font
+                remove haspGetPage
+                remove haspSetPage
+                remove hasp_enable_wakeup_touch
+                remove hasp_disable_wakeup_touch
+                remove haspProgressVal
+                remove haspProgressMsg
+                - edit hasp_init
+                - remove hasp_load_json
+                - remove haspClearPage
+            - remove hasp_attributes.cpp/hasp_attributes.h
+            - remove hasp_event.cpp/hasp_event.h
+            - remove hasp_object.cpp/hasp_object.h
+            - hasp_dispatch.cpp/hasp_dispatch.h
+                - remove dispatch_normalized_group_values
+                - edit dispatch_parse_json
+                - edit dispatch_parse_json
+                - remove dispatch_parse_button_attribute
+                - remove dispatch_backlight
+                - edit dispatch_command
+                - remove dispatch_calibrate
+                - remove dispatch_wakeup_obsolete
+                - remove dispatch_current_page, dispatch_page_next, dispatch_page_prev, dispatch_page_back, dispatch_set_page, dispatch_page, dispatch_clear_page
+                - edit dispatch_send_discovery
+                - remove dispatch_sleep
+            - hasp_gpio.cpp/hasp_gpio.h
+                - remove gpio_set_normalized_group_values 
+                - remove gpio_set_normalized_value
+                - remove gpio_update_group
+                - edit gpio_event_handler
+                - edit gpio_set_pin_state
+            - hasp_pages.cpp/hpp
+            - hasp_style.cpp
+            - hasp_parser.cpp/- hasp_parser.h
+                - remove get_action_id
+            - hasp_mqtt_pubsubclient.cpp
+                - edit mqttStart 
+            - hasp_network.cpp 
+                - edit networkStop
+            - tft_driver.h
+                - remove all
+    1.4 - remove TOUCH 
+       - new define HASP_USE_TOUCH to control de touch
+            - touchpad.c/touchpad.h
+            - hasp_gui.cpp - guiSetup()
+            - hasp_drv_touch.h     
+            - touchdriver.h   
+    1.5 - Add SSD1306 driver (https://github.com/lvgl/lv_port_esp32 --> https://github.com/lvgl/lvgl_esp32_drivers)
+        -
+     
+2 - disable CONSOLE
+    2.1 src\log\hasp_debug.cpp:280:9: error: 'console_update_prompt' was not declared in this scope
+        - hasp_debug.cpp: use HASP_USE_CONSOLE 
+3 - disablñe TELNET
+    3.1 src\log\hasp_debug.cpp:282:9: error: 'telnet_update_prompt' was not declared in this scope
+        - hasp_dispatch: use HASP_USE_CONSOLE 
+4 - disable MQTT
+    4.1 c:/users/r_alb/.platformio/packages/toolchain-xtensa/bin/../lib/gcc/xtensa-lx106-elf/10.3.0/../../../../xtensa-lx106-elf/bin/ld.exe: .pio/build/d1-mini-esp8266/src/hasp/hasp_dispatch.cpp.o:(.text._Z19dispatchEverySecondv+0x8): undefined reference to `_Z15mqttIsConnectedv'
+        - hasp_dispatch.cpp (dispatchEverySecond): use HASP_USE_MQTT  
+
+5 - touch default
+    add touch_read to touch_driver.h
+
+6 - fix some #if HASP_USE_CONFIG > 0
+    hasp_http.cpp
+        remove saveConfig
+
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
+
+// +AIRQ 1.4 - remove TOUCH
+#if HASP_USE_TOUCH > 0
+// -AIRQ 1.4 - remove GUI

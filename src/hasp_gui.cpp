@@ -3,6 +3,9 @@
 
 #include "hasplib.h"
 
+// +AIRQ 1.3 - Remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
 #include "lv_drv_conf.h"
 
 // Filesystem Driver
@@ -185,8 +188,14 @@ void guiCalibrate(void)
 {
 #if TOUCH_DRIVER == 0x2046 && defined(USER_SETUP_LOADED)
 #ifdef TOUCH_CS
+// +AIRQ 1.4 - remove TOUCH
+#if HASP_USE_TOUCH > 0
+// -AIRQ 1.4 - remove TOUCH
     haspTouch.calibrate(gui_settings.cal_data);
 #endif
+// +AIRQ 1.4 - remove TOUCH
+#endif //HASP_USE_TOUCH > 0
+// -AIRQ 1.4 - remove TOUCH
 
     for(int i = 0; i < 5; i++) {
         Serial.print(gui_settings.cal_data[i]);
@@ -363,6 +372,73 @@ void guiSetup()
 
 #endif
 
+<<<<<<< Updated upstream
+=======
+    /* Initialize Filesystems */
+#if LV_USE_FS_IF != 0
+    //_lv_fs_init(); // lvgl File System -- not neaded, it done in lv_init() when LV_USE_FILESYSTEM is set
+    LOG_VERBOSE(TAG_LVGL, F("Filesystem : " D_SETTING_ENABLED));
+    lv_fs_if_init(); // auxilary file system drivers
+    // filesystem_list_path("L:/");
+
+    lv_fs_file_t f;
+    lv_fs_res_t res;
+    res = lv_fs_open(&f, "L:/config.json", LV_FS_MODE_RD);
+    if(res == LV_FS_RES_OK) {
+        LOG_VERBOSE(TAG_HASP, F("TEST Opening config.json OK"));
+        lv_fs_close(&f);
+    } else {
+        LOG_ERROR(TAG_HASP, F("TEST Opening config.json from FS failed %d"), res);
+    }
+
+#else
+    LOG_VERBOSE(TAG_LVGL, F("Filesystem : " D_SETTING_DISABLED));
+#endif
+
+    /* Initialize PNG decoder */
+#if HASP_USE_PNGDECODE > 0
+    lv_png_init();
+#endif
+
+    /* Initialize BMP decoder */
+#if HASP_USE_BMPDECODE > 0
+    lv_bmp_init();
+#endif
+
+    /* Initialize GIF decoder */
+#if HASP_USE_GIFDECODE > 0
+    // lv_gif_init();
+#endif
+
+    /* Initialize JPG decoder */
+#if HASP_USE_JPGDECODE > 0
+    lv_split_jpeg_init();
+#endif
+
+#if defined(ARDUINO_ARCH_ESP32)
+    if(psramFound()) {
+        lv_img_cache_set_size(LV_IMG_CACHE_DEF_SIZE_PSRAM);
+    }
+#endif
+
+#ifdef USE_DMA_TO_TFT
+    LOG_VERBOSE(TAG_GUI, F("DMA        : " D_SETTING_ENABLED));
+#else
+    LOG_VERBOSE(TAG_GUI, F("DMA        : " D_SETTING_DISABLED));
+#endif
+
+    /* Setup Backlight Control Pin */
+    haspDevice.set_backlight_pin(gui_settings.backlight_pin);
+
+#ifdef LV_MEM_SIZE
+    LOG_VERBOSE(TAG_LVGL, F("MEM size   : %d"), LV_MEM_SIZE);
+#endif
+    LOG_VERBOSE(TAG_LVGL, F("VFB size   : %d"), (size_t)sizeof(lv_color_t) * guiVDBsize);
+
+// +AIRQ 1.4 - remove TOUCH
+#if HASP_USE_TOUCH > 0
+// -AIRQ 1.4 - remove GUI
+>>>>>>> Stashed changes
     /* Initialize the touch pad */
     static lv_indev_drv_t indev_drv;
     lv_indev_drv_init(&indev_drv);
@@ -374,6 +450,9 @@ void guiSetup()
 #endif
     lv_indev_t* mouse_indev  = lv_indev_drv_register(&indev_drv);
     mouse_indev->driver.type = LV_INDEV_TYPE_POINTER;
+// +AIRQ 1.4 - remove TOUCH
+#endif //HASP_USE_TOUCH > 0
+// -AIRQ 1.4 - remove GUI
 
     /*Set a cursor for the mouse*/
     LOG_TRACE(TAG_GUI, F("Initialize Cursor"));
@@ -390,14 +469,31 @@ void guiSetup()
     lv_obj_set_style_local_bg_color(cursor, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_RED);
     lv_obj_set_style_local_bg_opa(cursor, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_COVER);
 #endif
+<<<<<<< Updated upstream
     gui_hide_pointer(false);
     lv_indev_set_cursor(mouse_indev, cursor); /*Connect the image  object to the driver*/
+=======
+// +AIRQ 1.4 - remove TOUCH
+#if HASP_USE_TOUCH > 0
+// -AIRQ 1.4 - remove TOUCH
+        lv_indev_set_cursor(mouse_indev, cursor); /*Connect the image  object to the driver*/
+// +AIRQ 1.4 - remove TOUCH
+#endif //HASP_USE_TOUCH > 0
+// -AIRQ 1.4 - remove TOUCH
+    }
+>>>>>>> Stashed changes
 
+// +AIRQ 1.4 - remove TOUCH
+#if HASP_USE_TOUCH > 0
+// -AIRQ 1.4 - remove TOUCH
 #if !(defined(WINDOWS) || defined(POSIX))
     // drv_touch_init(gui_settings.rotation); // Touch driver
     haspTouch.init(tft_width, tft_height);
     haspTouch.set_rotation(gui_settings.rotation);
 #endif
+// +AIRQ 1.4 - remove TOUCH
+#endif //HASP_USE_TOUCH > 0
+// -AIRQ 1.4 - remove TOUCH
 
     /* Initialize Global progress bar*/
     lv_obj_user_data_t udata = (lv_obj_user_data_t){10, 0, 10};
@@ -427,9 +523,15 @@ IRAM_ATTR void guiLoop(void)
     //  tick.update();
 #endif
 
+// +AIRQ 1.4 - remove TOUCH
+#if HASP_USE_TOUCH > 0
+// -AIRQ 1.4 - remove GUI
 #if !(defined(WINDOWS) || defined(POSIX))
     // haspTouch.loop();
 #endif
+// +AIRQ 1.4 - remove TOUCH
+#endif //HASP_USE_TOUCH > 0
+// -AIRQ 1.4 - remove GUI
 }
 
 void guiEverySecond(void)
@@ -753,3 +855,6 @@ void guiTakeScreenshot()
     }
 }
 #endif
+// +AIRQ 1.3 - Remove GUI
+#endif
+// -AIRQ 1.3 - Remove GUI

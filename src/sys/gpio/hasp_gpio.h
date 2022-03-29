@@ -37,7 +37,13 @@ void gpioSetup(void);
 IRAM_ATTR void gpioLoop(void);
 void gpioEvery5Seconds(void);
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 void gpio_set_normalized_group_values(hasp_update_value_t& value);
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 void gpio_output_group_values(uint8_t group);
 
 bool gpio_input_pin_state(uint8_t pin);

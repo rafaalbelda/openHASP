@@ -5,6 +5,9 @@
 #define HASP_OBJECT_H
 
 #include "hasplib.h"
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 const char FP_SKIP[] PROGMEM     = "skip";
 const char FP_PAGE[] PROGMEM     = "page";
@@ -176,4 +179,7 @@ inline bool obj_check_type(const lv_obj_t* obj, lv_hasp_obj_type_t haspobjtype)
 #define HASP_OBJ_TAB 7861
 #define HASP_OBJ_ARC 64594
 
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 #endif

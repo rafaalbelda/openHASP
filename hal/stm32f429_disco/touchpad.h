@@ -6,6 +6,9 @@
 #ifndef INDEV_H
 #define INDEV_H
 
+// +AIRQ 1.4 - remove TOUCH
+#if HASP_USE_TOUCH > 0
+// -AIRQ 1.4 - remove TOUCH
 /*********************
  *      INCLUDES
  *********************/
@@ -30,3 +33,6 @@ void touchpad_init(void);
  **********************/
 
 #endif
+// +AIRQ 1.4 - remove TOUCH
+#endif // HASP_USE_TOUCH > 0
+// -AIRQ 1.4 - remove TOUCH

@@ -12,7 +12,13 @@ class Parser {
     static bool haspPayloadToColor(const char* payload, lv_color32_t& color);
     static bool get_event_state(uint8_t eventid);
     static void get_event_name(uint8_t eventid, char* buffer, size_t size);
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     static uint8_t get_action_id(const char* action);
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     static uint16_t get_sdbm(const char* str);
     static bool is_true(const char* s);
     static bool is_true(JsonVariant json);

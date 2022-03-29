@@ -36,6 +36,10 @@ class BaseTft {
 
 } // namespace dev
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
+
 #if defined(ESP32) && defined(USER_SETUP_LOADED)
 // #warning Building for ESP32 TFT_eSPI
 #include "tft_driver_tftespi.h"
@@ -59,5 +63,9 @@ class BaseTft {
 using dev::BaseTft;
 extern dev::BaseTft haspTft;
 #endif
+
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 #endif

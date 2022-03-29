@@ -26,6 +26,9 @@
 #include <sys/time.h>
 
 #include "hasplib.h"
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 #include "lv_core/lv_obj.h" // for tabview ext
 
@@ -828,3 +831,6 @@ void calendar_event_handler(lv_obj_t* obj, lv_event_t event)
     // event_update_group(obj->user_data.groupid, obj, val, min, max);
 }
 #endif
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI

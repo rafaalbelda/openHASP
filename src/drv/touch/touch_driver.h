@@ -8,6 +8,9 @@
 #include <Arduino.h>
 #endif
 
+// +AIRQ 1.4 - remove TOUCH
+#if HASP_USE_TOUCH > 0
+// -AIRQ 1.4 - remove TOUCH
 #include "hasplib.h"
 #include "lvgl.h"
 
@@ -83,6 +86,11 @@ extern dev::BaseTouch haspTouch;
 //     return false;
 // }
 #endif
+// +AIRQ 1.4 - remove TOUCH
+#else
+#define TOUCH_DRIVER -1 // No Touch
+#endif //HASP_USE_TOUCH > 0
+// -AIRQ 1.4 - remove GUI
 
 #endif
 

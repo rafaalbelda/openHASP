@@ -84,6 +84,9 @@ uint16_t haspThemeHue  = 200;
 char haspPagesPath[32] = "/pages.jsonl";
 char haspZiFontPath[32];
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 lv_style_t style_mbox_bg; /*Black bg. style with opacity*/
 lv_obj_t* kb;
 // lv_font_t * defaultFont;
@@ -102,6 +105,9 @@ lv_font_t* hasp_get_font(uint8_t fontid)
         return haspFonts[fontid];
     }
 }
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 /**
  * Check if sleep state needs to be updated
@@ -152,6 +158,9 @@ void hasp_get_sleep_state(char* payload)
     }
 }
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 /**
  * Anti Burn-in protection
  */
@@ -229,6 +238,9 @@ void hasp_set_wakeup_touch(bool en)
         LOG_INFO(TAG_HASP, F("First touch %s"), en ? D_SETTING_ENABLED : D_SETTING_DISABLED);
     }
 }
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 /**
  * Return the sleep times
@@ -298,6 +310,9 @@ void haspReconnect()
 
 // String progress_str((char *)0);
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 // Shows/hides the the global progress bar and updates the value
 void haspProgressVal(uint8_t val)
 {
@@ -355,6 +370,9 @@ void haspProgressMsg(const __FlashStringHelper* msg)
     haspProgressMsg(String(msg).c_str());
 }
 #endif
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 /*Add a custom apply callback*/
 static void custom_font_apply_cb(lv_theme_t* th, lv_obj_t* obj, lv_theme_style_t name)
@@ -489,6 +507,9 @@ void haspSetup(void)
     /* ********** Font Initializations ********** */
 
     LOG_WARNING(TAG_ATTR, "%s %d %x", __FILE__, __LINE__, nullptr);
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     LOG_WARNING(TAG_ATTR, "%s %d %x", __FILE__, __LINE__, haspFonts[0]);
     // LOG_WARNING(TAG_ATTR, "%s %d %x", __FILE__, __LINE__, &robotocondensed_regular_16);
 
@@ -537,6 +558,9 @@ void haspSetup(void)
     hasp_set_theme(haspThemeId);
 
     /* Create all screens using the theme */
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 #if HASP_USE_WIFI > 0
     if(!wifiShowAP()) {
@@ -545,8 +569,14 @@ void haspSetup(void)
 #endif
 
     hasp_init();
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     hasp_load_json();
     haspPages.set(haspStartPage, LV_SCR_LOAD_ANIM_FADE_ON);
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
     // lv_obj_t* obj        = lv_datetime_create(haspPages.get_obj(haspPages.get()), NULL);
     // obj->user_data.objid = LV_HASP_DATETIME;
@@ -565,13 +595,25 @@ IRAM_ATTR void haspLoop(void)
 
 void hasp_init(void)
 {
+// +AIRQ 1.3 - Remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
     haspPages.init(haspStartPage);
+// +AIRQ 1.3 - Remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
 }
 
+// +AIRQ 1.3 - Remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
 void hasp_load_json(void)
 {
     haspPages.load_jsonl(haspPagesPath);
 }
+// +AIRQ 1.3 - Remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
 
 /*
 void hasp_background(uint16_t pageid, uint16_t imageid)
@@ -629,6 +671,9 @@ void hasp_background(uint16_t pageid, uint16_t imageid)
 //     snprintf_P(version, len, PSTR("%u.%u.%u"), HASP_VER_MAJ, HASP_VER_MIN, HASP_VER_REV);
 // }
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 void haspClearPage(uint16_t pageid)
 {
     lv_obj_t* page = haspPages.get_obj(pageid);
@@ -642,6 +687,30 @@ void haspClearPage(uint16_t pageid)
     }
 }
 
+<<<<<<< Updated upstream
+=======
+uint8_t haspGetPage()
+{
+    return current_page;
+}
+
+void haspSetPage(uint8_t pageid)
+{
+    lv_obj_t* page = haspPages.get_obj(pageid);
+    if(!page || pageid == 0 || pageid > HASP_NUM_PAGES) {
+        LOG_WARNING(TAG_HASP, F(D_HASP_INVALID_PAGE), pageid);
+    } else {
+        LOG_TRACE(TAG_HASP, F(D_HASP_CHANGE_PAGE), pageid);
+        current_page = pageid;
+        lv_scr_load(page);
+        hasp_object_tree(page, pageid, 0);
+    }
+}
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
+
+>>>>>>> Stashed changes
 void hasp_get_info(JsonDocument& doc)
 {
     std::string buffer;
@@ -712,6 +781,9 @@ void hasp_get_info(JsonDocument& doc)
     }
 #endif
 
+// +AIRQ 1.3 - Remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
     info = doc.createNestedObject(F(D_INFO_LVGL_MEMORY));
     lv_mem_monitor_t mem_mon;
     lv_mem_monitor(&mem_mon);
@@ -720,6 +792,23 @@ void hasp_get_info(JsonDocument& doc)
     Parser::format_bytes(mem_mon.free_size, size_buf, sizeof(size_buf));
     info[F(D_INFO_FREE_MEMORY)]   = size_buf;
     info[F(D_INFO_FRAGMENTATION)] = mem_mon.frag_pct;
+<<<<<<< Updated upstream
+=======
+    
+// +AIRQ 1.3 - Remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
+    info = doc.createNestedObject(F("HASP State"));
+    hasp_get_sleep_state(size_buf);
+    info[F("Idle")]        = size_buf;
+// +AIRQ 1.3 - Remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
+    info[F("Active Page")] = haspPages.get();
+// +AIRQ 1.3 - Remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
+>>>>>>> Stashed changes
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -334,14 +334,25 @@ void debugPrintSuffix(uint8_t tag, int level, Print* _logOutput)
     else
         _logOutput->println();
 
+// +AIRQ 2.1 & 3.1 - Remove CONSOLE & TELNET
+# if (HASP_USE_CONSOLE > 0) && (HASP_USE_TELNET > 0)
+// -AIRQ 2.1 & 3.1 - Remove CONSOLE & TELNET
     if(_logOutput == &Serial) {
+// +AIRQ 2.1 - Remove CONSOLE
+# if HASP_USE_CONSOLE > 0
         console_update_prompt();
+// +AIRQ 2.1 - Remove CONSOLE
+#endif
+// -AIRQ 2.1 - Remove CONSOLE
 #if HASP_USE_TELNET > 0
     } else {
         telnet_update_prompt();
 #endif
     }
 }
+// +AIRQ 2.1 & 3.1 - Remove CONSOLE & TELNET
+#endif
+// -AIRQ 2.1 & 3.1 - Remove CONSOLE & TELNET
 
 // Start Serial Port at correct
 void debugStartSerial()

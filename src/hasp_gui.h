@@ -5,6 +5,9 @@
 #define HASP_GUI_H
 
 #include "hasplib.h"
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 struct bmp_header_t
 {
@@ -57,3 +60,6 @@ bool guiSetConfig(const JsonObject& settings);
 #endif
 
 #endif
+// +AIRQ 1.3 - remove GUI
+#endif
+// -AIRQ 1.3 - remove GUI

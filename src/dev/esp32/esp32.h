@@ -6,6 +6,7 @@
 
 #include "hasp_conf.h"
 #include "../device.h"
+#include "hasp/hasp_parser.h"
 
 #if defined(ESP32)
 

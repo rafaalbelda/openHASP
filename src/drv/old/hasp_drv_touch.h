@@ -10,8 +10,14 @@
 #define TOUCH_DRIVER -1 // No Touch
 #endif
 
+// +AIRQ 1.4 - remove TOUCH
+#if HASP_USE_TOUCH > 0
+// -AIRQ 1.4 - remove TOUCH
 void drv_touch_init(uint8_t rotation);
 IRAM_ATTR bool drv_touch_read(lv_indev_drv_t* indev_driver, lv_indev_data_t* data);
 IRAM_ATTR void drv_touch_loop();
+// +AIRQ 1.4 - remove TOUCH
+#endif //HASP_USE_TOUCH > 0
+// -AIRQ 1.4 - remove TOUCH
 
 #endif

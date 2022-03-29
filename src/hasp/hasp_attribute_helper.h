@@ -2,6 +2,9 @@
    For full license information read the LICENSE file in the project folder */
 
 #include "hasplib.h"
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 // the tag data is stored as SERIALIZED JSON data
 void my_obj_set_tag(lv_obj_t* obj, const char* tag)
@@ -705,3 +708,6 @@ static bool attribute_update_lv_property(lv_obj_t * obj, const char * attr_p, ui
     }
 }
 #endif
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI

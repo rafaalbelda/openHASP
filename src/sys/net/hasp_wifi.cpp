@@ -12,7 +12,9 @@
 #include "hasp_debug.h"
 #include "hasp_config.h"
 #include "hasp_network.h"
+#if HASP_USE_GUI > 0
 #include "hasp_gui.h"
+#endif
 
 #include "hasp/hasp_dispatch.h"
 #include "hasp/hasp.h"

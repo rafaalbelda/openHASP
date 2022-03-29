@@ -6,6 +6,9 @@
 #endif
 
 #include "hasplib.h"
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 #include "hasp_attribute_helper.h"
 
 /*** Image Improvement ***/
@@ -2622,3 +2625,7 @@ void hasp_process_obj_attribute(lv_obj_t* obj, const char* attribute, const char
             LOG_ERROR(TAG_ATTR, F(D_ERROR_UNKNOWN " (%d)"), ret);
     }
 }
+
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI

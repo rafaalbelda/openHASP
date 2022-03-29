@@ -21,6 +21,9 @@ static bool oobeAutoCalibrate = true;
 #include "lv_qrcode.h"
 #endif
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 static lv_obj_t* oobepage[2];
 static lv_obj_t* oobekb;
 lv_obj_t* pwd_ta;
@@ -295,6 +298,9 @@ static void oobe_calibrate_cb(lv_obj_t* ta, lv_event_t event)
     }
 }
 #endif // HASP_USE_WIFI
+// +AIRQ 1.3 - remove GUI
+#endif
+// -AIRQ 1.3 - remove GUI
 
 void oobeSetAutoCalibrate(bool cal)
 {
@@ -313,6 +319,9 @@ bool oobeSetup()
     if(wifiShowAP(ssid, pass)) {
         WiFi.scanNetworks(true);
         haspDevice.set_backlight_level(255);
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
         oobeSetupQR(ssid, pass);
         oobeSetupSsid();
 
@@ -325,6 +334,9 @@ bool oobeSetup()
             LOG_INFO(TAG_OOBE, F(D_OOBE_CALIBRATED));
         }
         oobeSetPage(0);
+// +AIRQ 1.3 - remove GUI
+#endif
+// -AIRQ 1.3 - remove GUI
         return true;
     } else {
         return false;
@@ -342,6 +354,9 @@ void oobeFakeSetup(const char*, const char*, uint8_t source)
 
     WiFi.scanNetworks(true);
     haspDevice.set_backlight_level(255);
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     oobeSetupQR(ssid, pass);
     oobeSetupSsid();
     oobeSetPage(0);
@@ -355,6 +370,9 @@ void oobeFakeSetup(const char*, const char*, uint8_t source)
     } else {
         LOG_INFO(TAG_OOBE, F(D_OOBE_CALIBRATED));
     }
+// +AIRQ 1.3 - remove GUI
+#endif
+// -AIRQ 1.3 - remove GUI
 #endif
 }
 #endif // HASP_USE_CONFIG

@@ -5,6 +5,9 @@
 #define HASP_ATTRIBUTE_H
 
 #include "hasplib.h"
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 #ifdef __cplusplus
 extern "C" {
@@ -501,4 +504,7 @@ _HASP_ATTRIBUTE(SCALE_END_LINE_WIDTH, scale_end_line_width, lv_style_int_t)
 #define ATTR_TEXT_VERSION 60178
 #define ATTR_TEXT_SSID 62981
 
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 #endif // HASP_ATTRIBUTE_H

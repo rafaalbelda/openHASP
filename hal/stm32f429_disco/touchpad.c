@@ -3,6 +3,9 @@
  * 
  */
 
+// +AIRQ 1.4 - remove TOUCH
+#if HASP_USE_TOUCH > 0
+// -AIRQ 1.4 - remove TOUCH
 /*********************
  *      INCLUDES
  *********************/
@@ -142,3 +145,7 @@ static bool touchpad_get_xy(int16_t *x, int16_t *y)
 
 	return true;
 }
+
+// +AIRQ 1.4 - remove TOUCH
+#endif
+// -AIRQ 1.4 - remove TOUCH

@@ -303,7 +303,14 @@ static void webSendHeader(const char* nodename, uint32_t httpdatalength, bool go
 #endif
 }
 
+<<<<<<< Updated upstream
 bool saveConfig()
+=======
+// +AIRQ 6
+#if HASP_USE_CONFIG > 0
+// -AIRQ 6
+void saveConfig()
+>>>>>>> Stashed changes
 {
     bool updated = false;
 
@@ -321,10 +328,23 @@ bool saveConfig()
             updated = mqttSetConfig(settings.as<JsonObject>());
 #endif
 
+<<<<<<< Updated upstream
         } else if(save == String(PSTR("gui"))) {
             settings[FPSTR(FP_GUI_POINTER)] = webServer.hasArg(PSTR("cursor"));
             settings[FPSTR(FP_GUI_INVERT)]  = webServer.hasArg(PSTR("invert"));
             updated                         = guiSetConfig(settings.as<JsonObject>());
+=======
+ // +AIRQ 1.3 - remove GUI
+//#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
+//           } else if(save == String(PSTR("gui"))) {
+                settings[FPSTR(FP_GUI_POINTER)] = webServer.hasArg(PSTR("cur"));
+                settings[FPSTR(FP_GUI_INVERT)]  = webServer.hasArg(PSTR("inv"));
+                guiSetConfig(settings.as<JsonObject>());
+// +AIRQ 1.3 - remove GUI
+//#endif
+// -AIRQ 1.3 - remove GUI
+>>>>>>> Stashed changes
 
         } else if(save == String(PSTR("debug"))) {
             settings[FPSTR(FP_DEBUG_ANSI)] = webServer.hasArg(PSTR("ansi"));
@@ -345,12 +365,25 @@ bool saveConfig()
 
     return updated;
 }
+// +AIRQ 6
+#endif //HASP_USE_CONFIG > 0
+// -AIRQ 6
 
 static void webHandleRoot()
 {
     if(!httpIsAuthenticated(F("root"))) return;
     bool updated = saveConfig();
 
+<<<<<<< Updated upstream
+=======
+// +AIRQ 6
+#if HASP_USE_CONFIG > 0
+// -AIRQ 6
+    saveConfig();
+// +AIRQ 6
+#endif //HASP_USE_CONFIG > 0
+// -AIRQ 6
+>>>>>>> Stashed changes
     {
         String httpMessage((char*)0);
         httpMessage.reserve(HTTP_PAGE_SIZE);
@@ -358,9 +391,29 @@ static void webHandleRoot()
         httpMessage += haspDevice.get_hostname();
         httpMessage += F("</h1><hr>");
 
+<<<<<<< Updated upstream
         if(updated) {
             httpMessage += F("<p class='info'>" D_HTTP_CONFIG_CHANGED "</p>");
         }
+=======
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
+        httpMessage += F("<p><form method='GET' action='/config/hasp'><button type='submit'>" D_HTTP_HASP_DESIGN
+                         "</button></form></p>");
+
+        httpMessage += F("<p><form method='GET' action='screenshot'><button type='submit'>" D_HTTP_SCREENSHOT
+                         "</button></form></p>");
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
+
+        httpMessage +=
+            F("<p><form method='GET' action='info'><button type='submit'>" D_HTTP_INFORMATION "</button></form></p>");
+        add_form_button(httpMessage, F(D_HTTP_CONFIGURATION), F("/config"), F(""));
+        // httpMessage += F("<p><form method='GET' action='config'><button type='submit'>" D_HTTP_CONFIGURATION
+        //                  "</button></form></p>");
+>>>>>>> Stashed changes
 
         httpMessage += F("<a href='/config/hasp'>" D_HTTP_HASP_DESIGN "</a>");
         httpMessage += F("<a href='/screenshot'>" D_HTTP_SCREENSHOT "</a>");
@@ -412,7 +465,14 @@ static void httpHandleReboot()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+<<<<<<< Updated upstream
 static void webHandleScreenshot()
+=======
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
+void webHandleScreenshot()
+>>>>>>> Stashed changes
 { // http://plate01/screenshot
     if(!httpIsAuthenticated(F("screenshot"))) return;
 
@@ -436,6 +496,23 @@ static void webHandleScreenshot()
             return;
         }
     }
+<<<<<<< Updated upstream
+=======
+}
+// +AIRQ 1.3 - remove GUI
+#endif
+// -AIRQ 1.3 - remove GUI
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void webHandleAbout()
+{ // http://plate01/about
+    if(!httpIsAuthenticated(F("about"))) return;
+
+    {
+        String mitLicense((char*)0);
+        mitLicense = FPSTR(MIT_LICENSE);
+>>>>>>> Stashed changes
 
     { // Send Content
         String httpMessage((char*)0);
@@ -559,8 +636,124 @@ static void webHandleAbout()
         String httpMessage((char*)0);
         httpMessage.reserve(HTTP_PAGE_SIZE);
 
+<<<<<<< Updated upstream
         httpMessage += "<div id='doc'></div><script>window.addEventListener('load', about());</script>";
         httpMessage += FPSTR(MAIN_MENU_BUTTON);
+=======
+        /* LVGL Stats */
+        lv_mem_monitor_t mem_mon;
+        lv_mem_monitor(&mem_mon);
+        httpMessage += F("</p><p><b>LVGL Memory: </b>");
+        Parser::format_bytes(mem_mon.total_size, size_buf, sizeof(size_buf));
+        httpMessage += size_buf;
+        httpMessage += F("<br/><b>LVGL Free: </b>");
+        Parser::format_bytes(mem_mon.free_size, size_buf, sizeof(size_buf));
+        httpMessage += size_buf;
+        httpMessage += F("<br/><b>LVGL Fragmentation: </b>");
+        httpMessage += mem_mon.frag_pct;
+
+        // httpMessage += F("<br/><b>LCD Model: </b>")) + String(LV_HASP_HOR_RES_MAX) + " x " +
+        // String(LV_HASP_VER_RES_MAX); httpMessage += F("<br/><b>LCD Version: </b>")) +
+        // String(lcdVersion);
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
+        httpMessage += F("</p/><p><b>LCD Active Page: </b>");
+        httpMessage += String(haspPages.get());
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
+
+        /* Wifi Stats */
+#if HASP_USE_WIFI > 0
+        httpMessage += F("</p/><p><b>SSID: </b>");
+        httpMessage += String(WiFi.SSID());
+        httpMessage += F("</br><b>Signal Strength: </b>");
+
+        int8_t rssi = WiFi.RSSI();
+        httpMessage += String(rssi);
+        httpMessage += F("dBm (");
+
+        if(rssi >= -50) {
+            httpMessage += F("Excellent)");
+        } else if(rssi >= -60) {
+            httpMessage += F("Good)");
+        } else if(rssi >= -70) {
+            httpMessage += F("Fair)");
+        } else if(rssi >= -80) {
+            httpMessage += F("Weak)");
+        } else {
+            httpMessage += F("Very Bad)");
+        }
+#if defined(STM32F4xx)
+        byte mac[6];
+        WiFi.macAddress(mac);
+        char macAddress[16];
+        snprintf_P(macAddress, sizeof(macAddress), PSTR("%02x%02x%02x"), mac[0], mac[1], mac[2], mac[3], mac[4],
+                   mac[5]);
+        httpMessage += F("</br><b>IP Address: </b>");
+        httpMessage += String(WiFi.localIP());
+        httpMessage += F("</br><b>Gateway: </b>");
+        httpMessage += String(WiFi.gatewayIP());
+        httpMessage += F("</br><b>MAC Address: </b>");
+        httpMessage += String(macAddress);
+#else
+        httpMessage += F("</br><b>IP Address: </b>");
+        httpMessage += String(WiFi.localIP().toString());
+        httpMessage += F("</br><b>Gateway: </b>");
+        httpMessage += String(WiFi.gatewayIP().toString());
+        httpMessage += F("</br><b>DNS Server: </b>");
+        httpMessage += String(WiFi.dnsIP().toString());
+        httpMessage += F("</br><b>MAC Address: </b>");
+        httpMessage += String(WiFi.macAddress());
+#endif
+#endif
+#if HASP_USE_ETHERNET > 0
+#if defined(ARDUINO_ARCH_ESP32)
+        httpMessage += F("</p/><p><b>Ethernet: </b>");
+        httpMessage += String(ETH.linkSpeed());
+        httpMessage += F(" Mbps");
+        if(ETH.fullDuplex()) {
+            httpMessage += F(" " D_INFO_FULL_DUPLEX);
+        }
+        httpMessage += F("</br><b>IP Address: </b>");
+        httpMessage += String(ETH.localIP().toString());
+        httpMessage += F("</br><b>Gateway: </b>");
+        httpMessage += String(ETH.gatewayIP().toString());
+        httpMessage += F("</br><b>DNS Server: </b>");
+        httpMessage += String(ETH.dnsIP().toString());
+        httpMessage += F("</br><b>MAC Address: </b>");
+        httpMessage += String(ETH.macAddress());
+#endif
+#endif
+/* Mqtt Stats */
+#if HASP_USE_MQTT > 0
+        httpMessage += F("</p/><p><b>MQTT Status: </b>");
+        if(mqttIsConnected()) { // Check MQTT connection
+            httpMessage += F("Connected");
+        } else {
+            httpMessage += F("<font color='red'><b>Disconnected</b></font>, return code: ");
+            //     +String(mqttClient.returnCode());
+        }
+        httpMessage += F("<br/><b>MQTT ClientID: </b>");
+
+        {
+            char mqttClientId[64];
+            String mac = halGetMacAddress(3, "");
+            mac.toLowerCase();
+            snprintf_P(mqttClientId, sizeof(mqttClientId), PSTR("%s-%s"), haspDevice.get_hostname(), mac.c_str());
+            httpMessage += mqttClientId;
+        }
+
+#endif // MQTT
+
+        /* ESP Stats */
+        httpMessage += F("</p/><p><b>MCU Model: </b>");
+        httpMessage += haspDevice.get_chip_model();
+        httpMessage += F("<br/><b>CPU Frequency: </b>");
+        httpMessage += String(haspDevice.get_cpu_frequency());
+        httpMessage += F("MHz");
+>>>>>>> Stashed changes
 
         webSendHeader(haspDevice.get_hostname(), httpMessage.length(), false);
         webServer.sendContent(httpMessage);
@@ -626,8 +819,14 @@ static void webUploadProgress()
         LOG_VERBOSE(TAG_HTTP, F(D_BULLET "Uploaded %u / %d bytes"), upload->totalSize + upload->currentSize, t);
         htppLastLoopTime = millis();
     }
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     if(t > 0) t = (upload->totalSize + upload->currentSize) * 100 / t;
     haspProgressVal(t);
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 }
 
 #if defined(ARDUINO_ARCH_ESP32) || defined(ARDUINO_ARCH_ESP8266)
@@ -639,10 +838,22 @@ static inline void webUpdatePrintError()
     StringStream stream((String&)output);
     Update.printError(stream); // ESP8266 only has printError()
     LOG_ERROR(TAG_HTTP, output.c_str());
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     haspProgressMsg(output.c_str());
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 #elif defined(ARDUINO_ARCH_ESP32)
     LOG_ERROR(TAG_HTTP, Update.errorString()); // ESP32 has errorString()
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     haspProgressMsg(Update.errorString());
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 #endif
 }
 
@@ -692,7 +903,13 @@ static void webHandleFirmwareUpload()
                 size = UPDATE_SIZE_UNKNOWN;
 #endif
             }
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
             haspProgressMsg(upload->filename.c_str());
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
             // if(!Update.begin(UPDATE_SIZE_UNKNOWN)) { // start with max available size
             //  const char label[] = "spiffs";
@@ -711,9 +928,21 @@ static void webHandleFirmwareUpload()
             break;
 
         case UPLOAD_FILE_END:
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
             haspProgressVal(100);
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
             if(Update.end(true)) { // true to set the size to the current progress
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
                 haspProgressMsg(F(D_OTA_UPDATE_APPLY));
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
                 webUpdateReboot();
             } else {
                 webUpdatePrintError();
@@ -754,6 +983,7 @@ static int handleFileRead(String path)
 
         LOG_TRACE(TAG_HTTP, F(D_HTTP_SENDING_PAGE), path.c_str(), webServer.client().remoteIP().toString().c_str());
 
+#if HASP_USE_CONFIG > 0
         String configFile((char*)0); // Verify if the file is config.json
         configFile = FPSTR(FP_HASP_CONFIG_FILE);
 
@@ -770,15 +1000,21 @@ static int handleFileRead(String path)
             webServer.send(200, contentType, buffer);
 
         } else {
+<<<<<<< Updated upstream
             File file = HASP_FS.open(path, "r");
 
             // script.js and styles.css can be cached
             if(is_cached) webSendCacheHeader(file.size(), 3600);
+=======
+#endif
+>>>>>>> Stashed changes
 
             // Stream other files directly from filesystem
             webServer.streamFile(file, contentType);
             file.close();
+#if HASP_USE_CONFIG > 0
         }
+#endif
 
         return 200; // OK
     }
@@ -827,6 +1063,7 @@ static void handleFileUpload()
         }
         if(filename.length() < 32) {
             fsUploadFile = HASP_FS.open(filename, "w");
+<<<<<<< Updated upstream
             if(!fsUploadFile || fsUploadFile.isDirectory()) {
                 LOG_WARNING(TAG_HTTP, F(D_FILE_SAVE_FAILED), filename.c_str());
                 fsUploadFile.close();
@@ -834,6 +1071,16 @@ static void handleFileUpload()
                 LOG_TRACE(TAG_HTTP, F("handleFileUpload Name: %s"), filename.c_str());
                 haspProgressMsg(fsUploadFile.name());
             }
+=======
+            LOG_TRACE(TAG_HTTP, F("handleFileUpload Name: %s"), filename.c_str());
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI            
+            haspProgressMsg(fsUploadFile.name());
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
+>>>>>>> Stashed changes
         } else {
             LOG_ERROR(TAG_HTTP, F("Filename %s is too long"), filename.c_str());
         }
@@ -857,7 +1104,13 @@ static void handleFileUpload()
         } else {
             webServer.send_P(400, PSTR("text/plain"), "Bad Request");
         }
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
         haspProgressVal(255);
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
         // httpReconnect();
     }
@@ -916,12 +1169,24 @@ static void handleFileCreate()
     }
     if(webServer.hasArg(F("load"))) {
         dispatch_idle(NULL, "0", TAG_HTTP);
+// +AIRQ 1.3 - Remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
         hasp_load_json();
+// +AIRQ 1.3 - Remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
     }
     if(webServer.hasArg(F("page"))) {
         uint8_t pageid = atoi(webServer.arg(F("page")).c_str());
         dispatch_idle(NULL, "0", TAG_HTTP);
+// +AIRQ 1.3 - Remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI        
         dispatch_set_page(pageid, LV_SCR_LOAD_ANIM_NONE);
+// +AIRQ 1.3 - Remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
     }
     webServer.send(200, PSTR("text/plain"), "");
 }
@@ -1027,8 +1292,23 @@ static void webHandleConfig()
 #if HASP_USE_MQTT > 0
         httpMessage += F("<a href='/config/mqtt'>" D_HTTP_MQTT_SETTINGS "</a>");
 #endif
+<<<<<<< Updated upstream
         httpMessage += F("<a href='/config/http'>" D_HTTP_HTTP_SETTINGS "</a>");
         httpMessage += F("<a href='/config/gui'>" D_HTTP_GUI_SETTINGS "</a>");
+=======
+        add_form_button(httpMessage, F(D_HTTP_HTTP_SETTINGS), F("/config/http"), F(""));
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
+        add_form_button(httpMessage, F(D_HTTP_GUI_SETTINGS), F("/config/gui"), F(""));
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
+
+        // httpMessage +=
+        //     F("<p><form method='GET' action='/config/hasp'><button type='submit'>HASP
+        //     Settings</button></form></p>");
+>>>>>>> Stashed changes
 
 #if HASP_USE_GPIO > 0
         httpMessage += F("<a href='/config/gpio'>" D_HTTP_GPIO_SETTINGS "</a>");
@@ -1127,7 +1407,14 @@ static void webHandleMqttConfig()
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+<<<<<<< Updated upstream
 static void webHandleGuiConfig()
+=======
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
+void webHandleGuiConfig()
+>>>>>>> Stashed changes
 { // http://plate01/config/wifi
     if(!httpIsAuthenticated(F("config/gui"))) return;
 
@@ -1229,6 +1516,9 @@ static void webHandleGuiConfig()
         if(webServer.hasArg(F("brn"))) dispatch_antiburn(NULL, "on", TAG_HTTP);
     }
 }
+// +AIRQ 1.3 - remove GUI
+#endif
+// -AIRQ 1.3 - remove GUI
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #if HASP_USE_WIFI > 0
@@ -1532,9 +1822,19 @@ static void webHandleGpioOutput()
 { // http://plate01/config/gpio/options
     if(!httpIsAuthenticated(F("config/gpio/options"))) return;
 
+<<<<<<< Updated upstream
     { // Send Content
+=======
+    {
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
+>>>>>>> Stashed changes
         StaticJsonDocument<256> settings;
         guiGetConfig(settings.to<JsonObject>());
+// +AIRQ 1.3 - remove GUI
+#endif
+// -AIRQ 1.3 - remove GUI
 
         uint8_t config_id = webServer.arg(F("id")).toInt();
 
@@ -1614,10 +1914,20 @@ static void webHandleGpioOutput()
 static void webHandleGpioInput()
 { // http://plate01/config/gpio/options
     if(!httpIsAuthenticated(F("config/gpio/input"))) return;
+<<<<<<< Updated upstream
 
     { // Send Content
+=======
+    {
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
+>>>>>>> Stashed changes
         StaticJsonDocument<256> settings;
         guiGetConfig(settings.to<JsonObject>());
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
         uint8_t config_id = webServer.arg(F("id")).toInt();
 
@@ -2224,9 +2534,14 @@ void httpSetup()
     // webServer.on(F("/espfirmware"), httpHandleEspFirmware);
 #endif
 
+<<<<<<< Updated upstream
 #if HASP_USE_WIFI > 0
+=======
+#if HASP_USE_CONFIG > 0
+>>>>>>> Stashed changes
     // These two endpoints are needed in STA and AP mode
     webServer.on(F("/config"), webHandleConfig);
+#endif
 
 #if !defined(STM32F4xx)
 
@@ -2244,7 +2559,13 @@ void httpSetup()
     webServer.on(F("/page/"), []() {
         String pageid = webServer.arg(F("page"));
         webServer.send(200, PSTR("text/plain"), "Page: '" + pageid + "'");
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI        
         dispatch_set_page(pageid.toInt(), LV_SCR_LOAD_ANIM_NONE);
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     });
 
 #if HASP_USE_SPIFFS > 0 || HASP_USE_LITTLEFS > 0
@@ -2273,13 +2594,29 @@ void httpSetup()
     webServer.on(F("/"), webHandleRoot);
     webServer.on(F("/info"), webHandleInfoJson);
     // webServer.on(F("/info"), webHandleInfo);
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     webServer.on(F("/screenshot"), webHandleScreenshot);
+<<<<<<< Updated upstream
+=======
+// +AIRQ 1.3 - remove GUI
+#endif
+// -AIRQ 1.3 - remove GUI
+    webServer.on(F("/firmware"), webHandleFirmware);
+>>>>>>> Stashed changes
     webServer.on(F("/reboot"), httpHandleReboot);
 
 #if HASP_USE_CONFIG > 0
     webServer.on(F("/config/hasp"), webHandleHaspConfig);
     webServer.on(F("/config/http"), webHandleHttpConfig);
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     webServer.on(F("/config/gui"), webHandleGuiConfig);
+// +AIRQ 1.3 - remove GUI
+#endif
+// -AIRQ 1.3 - remove GUI
     webServer.on(F("/config/debug"), webHandleDebugConfig);
 #if HASP_USE_MQTT > 0
     webServer.on(F("/config/mqtt"), webHandleMqttConfig);

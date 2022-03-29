@@ -68,7 +68,14 @@ void networkStart(void)
 
 void networkStop(void)
 {
+    
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     haspProgressMsg(F("Network Disconnected"));
+// +AIRQ 1.3 - remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
     debugStopSyslog();
     // mqttStop();

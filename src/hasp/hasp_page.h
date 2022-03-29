@@ -6,6 +6,9 @@
 
 #include "hasplib.h"
 
+// +AIRQ 1.3 - Remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
 /*********************
  *      DEFINES
  *********************/
@@ -63,4 +66,7 @@ class Page {
 using hasp::Page;
 extern hasp::Page haspPages;
 
+// +AIRQ 1.3 - Remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
 #endif // HASP_PAGES_H

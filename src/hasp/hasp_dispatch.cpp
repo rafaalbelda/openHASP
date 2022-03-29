@@ -135,6 +135,9 @@ void dispatch_json_error(uint8_t tag, DeserializationError& jsonError)
     LOG_ERROR(tag, F(D_JSON_FAILED " %s"), jsonError.c_str());
 }
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 // p[x].b[y].attr=value
 static inline bool dispatch_parse_button_attribute(const char* topic_p, const char* payload, bool update)
 {
@@ -184,6 +187,9 @@ static inline bool dispatch_parse_button_attribute(const char* topic_p, const ch
     hasp_process_attribute(pageid, objid, topic_p, payload, update);
     return true;
 }
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 static void dispatch_input(const char* topic, const char* payload)
 {
@@ -278,7 +284,13 @@ void dispatch_command(const char* topic, const char* payload, bool update, uint8
 {
     /* ================================= Standard payload commands ======================================= */
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     if(dispatch_parse_button_attribute(topic, payload, update)) return; // matched pxby.attr, first for speed
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
     // check and execute commands from commands array
     for(int i = 0; i < nCommands; i++) {
@@ -469,12 +481,18 @@ void dispatch_config(const char* topic, const char* payload, uint8_t source)
             debugGetConfig(settings);
     }
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     else if(strcasecmp_P(topic, PSTR("gui")) == 0) {
         if(update)
             guiSetConfig(settings);
         else
             guiGetConfig(settings);
     }
+// +AIRQ 1.3 - remove GUI
+#endif
+// -AIRQ 1.3 - remove GUI
 
     else if(strcasecmp_P(topic, PSTR("hasp")) == 0) {
         if(update)
@@ -543,6 +561,9 @@ void dispatch_config(const char* topic, const char* payload, uint8_t source)
 
 /********************************************** Output States ******************************************/
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 void dispatch_normalized_group_values(hasp_update_value_t& value)
 {
     if(value.group == 0) return;
@@ -557,10 +578,17 @@ void dispatch_normalized_group_values(hasp_update_value_t& value)
     gpio_output_group_values(value.group); // Output new gpio values
 #endif
 }
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 /********************************************** Native Commands ****************************************/
 
 void dispatch_screenshot(const char*, const char* filename, uint8_t source)
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
+void dispatch_screenshot(const char*, const char* filename)
 {
 #if HASP_USE_SPIFFS > 0 || HASP_USE_LITTLEFS > 0
 
@@ -578,6 +606,9 @@ void dispatch_screenshot(const char*, const char* filename, uint8_t source)
     LOG_WARNING(TAG_MSGR, D_FILE_SAVE_FAILED, filename);
 #endif
 }
+// +AIRQ 1.3 - remove GUI
+#endif
+// -AIRQ 1.3 - remove GUI
 
 void dispatch_parse_json(const char*, const char* payload, uint8_t source)
 { // Parse an incoming JSON array into individual commands
@@ -605,9 +636,15 @@ void dispatch_parse_json(const char*, const char* payload, uint8_t source)
             dispatch_text_line(command.as<const char*>(), source);
         }
         // guiStart();
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     } else if(json.is<JsonObject>()) { // handle json as a jsonl
         uint8_t savedPage = haspPages.get();
         hasp_new_object(json.as<JsonObject>(), savedPage);
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
         // #ifdef ARDUINO
         //     } else if(json.is<String>()) { // handle json as a single command
@@ -634,8 +671,17 @@ void dispatch_parse_jsonl(Stream& stream, uint8_t& saved_page_id)
 void dispatch_parse_jsonl(std::istream& stream, uint8_t& saved_page_id)
 #endif
 {
+<<<<<<< Updated upstream
     // uint8_t savedPage = haspPages.get();
     uint16_t line = 1;
+=======
+// +AIRQ 1.3 - Remove GUI
+#if HASP_USE_GUI > 0
+    uint8_t savedPage = haspPages.get();
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
+    uint16_t line     = 1;
+>>>>>>> Stashed changes
     DynamicJsonDocument jsonl(MQTT_MAX_PACKET_SIZE / 2 + 128);
     DeserializationError jsonError = deserializeJson(jsonl, stream);
 
@@ -643,6 +689,9 @@ void dispatch_parse_jsonl(std::istream& stream, uint8_t& saved_page_id)
     stream.setTimeout(25);
 #endif
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     // guiStop();
     while(jsonError == DeserializationError::Ok) {
         hasp_new_object(jsonl.as<JsonObject>(), saved_page_id);
@@ -650,6 +699,9 @@ void dispatch_parse_jsonl(std::istream& stream, uint8_t& saved_page_id)
         line++;
     }
     // guiStart();
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
     /* For debugging purposes */
     if(jsonError == DeserializationError::EmptyInput) {
@@ -664,8 +716,15 @@ void dispatch_parse_jsonl(std::istream& stream, uint8_t& saved_page_id)
 
 void dispatch_parse_jsonl(const char*, const char* payload, uint8_t source)
 {
+<<<<<<< Updated upstream
     if(source != TAG_MQTT) saved_jsonl_page = haspPages.get();
 #if HASP_USE_CONFIG > 0
+=======
+// +ARQ
+//#if HASP_USE_CONFIG > 0
+#if 1
+// -ARQ
+>>>>>>> Stashed changes
     CharStream stream((char*)payload);
     // stream.setTimeout(10);
     dispatch_parse_jsonl(stream, saved_jsonl_page);
@@ -746,6 +805,9 @@ void dispatch_exec(const char*, const char* payload, uint8_t source)
 #endif
 }
 
+// +AIRQ 1.3 - Remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
 void dispatch_current_page()
 {
     char topic[8];
@@ -823,6 +885,9 @@ void dispatch_clear_page(const char*, const char* page, uint8_t source)
     }
     haspPages.clear(pageid);
 }
+// +AIRQ 1.3 - Remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
 
 void dispatch_dim(const char*, const char* level)
 {
@@ -887,6 +952,9 @@ void dispatch_moodlight(const char* topic, const char* payload, uint8_t source)
     dispatch_state_subtopic(out_topic, buffer);
 }
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 void dispatch_backlight_obsolete(const char* topic, const char* payload, uint8_t source)
 {
     LOG_WARNING(TAG_MSGR, F(D_ATTRIBUTE_OBSOLETE D_ATTRIBUTE_INSTEAD), topic,
@@ -947,6 +1015,9 @@ void dispatch_backlight(const char*, const char* payload, uint8_t source)
     memcpy_P(topic, PSTR("backlight"), 10);
     dispatch_state_brightness(topic, (hasp_event_t)haspDevice.get_backlight_power(), haspDevice.get_backlight_level());
 }
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 void dispatch_web_update(const char*, const char* espOtaUrl, uint8_t source)
 {
@@ -1099,7 +1170,13 @@ void dispatch_send_discovery(const char*, const char*, uint8_t source)
     doc[F("mdl")]   = haspDevice.get_model();
     doc[F("mf")]    = F(D_MANUFACTURER);
     doc[F("hwid")]  = haspDevice.get_hardware_id();
+// +AIRQ 1.3 - Remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
     doc[F("pages")] = haspPages.count();
+// +AIRQ 1.3 - Remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
     doc[F("sw")]    = haspDevice.get_version();
 
 #if HASP_USE_HTTP > 0
@@ -1165,6 +1242,9 @@ void dispatch_statusupdate(const char*, const char*, uint8_t source)
                    haspDevice.get_free_heap(), haspDevice.get_heap_fragmentation(), haspDevice.get_core_version());
         strcat(data, buffer);
 
+// +AIRQ 1.3 - Remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
         snprintf_P(buffer, sizeof(buffer), PSTR("\"canUpdate\":\"false\",\"page\":%u,\"numPages\":%u,"),
                    haspPages.get(), haspPages.count());
         strcat(data, buffer);
@@ -1177,6 +1257,9 @@ void dispatch_statusupdate(const char*, const char*, uint8_t source)
         snprintf_P(buffer, sizeof(buffer), PSTR("\"tftDriver\":\"%s\",\"tftWidth\":%u,\"tftHeight\":%u}"),
                    haspTft.get_tft_model(), haspTft.width(), haspTft.height());
         strcat(data, buffer);
+// +AIRQ 1.3 - Remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
     }
 
     memcpy_P(topic, PSTR("statusupdate"), 13);
@@ -1197,7 +1280,13 @@ void dispatch_current_state(uint8_t source)
 {
     dispatch_statusupdate(NULL, NULL, source);
     dispatch_idle(NULL, NULL, source);
+// +AIRQ 1.3 - Remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
     dispatch_current_page();
+// +AIRQ 1.3 - Remove GUI
+#endif //HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
     dispatch_send_sensordata(NULL, NULL, source);
     dispatch_send_discovery(NULL, NULL, source);
     dispatch_state_antiburn(hasp_get_antiburn());
@@ -1221,6 +1310,9 @@ bool dispatch_factory_reset()
     return formated && erased;
 }
 
+// +AIRQ 1.3 - Remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
 void dispatch_calibrate(const char*, const char*, uint8_t source)
 {
     guiCalibrate();
@@ -1238,6 +1330,9 @@ void dispatch_sleep(const char*, const char*, uint8_t source)
 {
     hasp_set_wakeup_touch(false);
 }
+// +AIRQ 1.3 - Remove GUI
+#endif
+// -AIRQ 1.3 - Remove GUI
 
 void dispatch_idle(const char*, const char* payload, uint8_t source)
 {
@@ -1246,7 +1341,13 @@ void dispatch_idle(const char*, const char* payload, uint8_t source)
 
     // idle off command
     if(payload && strlen(payload) && !Parser::is_true(payload)) {
+// +AIRQ 1.3 - Remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
         hasp_set_wakeup_touch(false);
+// +AIRQ 1.3 - Remove GUI
+#endif
+// -AIRQ 1.3 - Remove GUI
         hasp_set_sleep_state(HASP_SLEEP_OFF);
         lv_disp_trig_activity(NULL);
     }
@@ -1330,6 +1431,9 @@ void dispatchSetup()
     LOG_TRACE(TAG_MSGR, F(D_SERVICE_STARTING));
 
     /* WARNING: remember to expand the commands array when adding new commands */
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     dispatch_add_command(PSTR("json"), dispatch_parse_json);
     dispatch_add_command(PSTR("page"), dispatch_page);
     dispatch_add_command(PSTR("sleep"), dispatch_sleep);
@@ -1337,8 +1441,14 @@ void dispatchSetup()
     dispatch_add_command(PSTR("clearpage"), dispatch_clear_page);
     dispatch_add_command(PSTR("jsonl"), dispatch_parse_jsonl);
     dispatch_add_command(PSTR("backlight"), dispatch_backlight);
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     dispatch_add_command(PSTR("moodlight"), dispatch_moodlight);
     dispatch_add_command(PSTR("idle"), dispatch_idle);
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     dispatch_add_command(PSTR("dim"), dispatch_backlight_obsolete);        // dim
     dispatch_add_command(PSTR("brightness"), dispatch_backlight_obsolete); // dim
     dispatch_add_command(PSTR("light"), dispatch_backlight_obsolete);
@@ -1348,10 +1458,19 @@ void dispatchSetup()
     dispatch_add_command(PSTR("wakeup"), dispatch_wakeup_obsolete);
     dispatch_add_command(PSTR("antiburn"), dispatch_antiburn);
     dispatch_add_command(PSTR("calibrate"), dispatch_calibrate);
+// +AIRQ 1.3 - remove GUI
+#endif
+// -AIRQ 1.3 - remove GUI
     dispatch_add_command(PSTR("update"), dispatch_web_update);
     dispatch_add_command(PSTR("reboot"), dispatch_reboot);
     dispatch_add_command(PSTR("restart"), dispatch_reboot);
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     dispatch_add_command(PSTR("screenshot"), dispatch_screenshot);
+// +AIRQ 1.3 - remove GUI
+#endif
+// -AIRQ 1.3 - remove GUI
     dispatch_add_command(PSTR("discovery"), dispatch_send_discovery);
     dispatch_add_command(PSTR("factoryreset"), dispatch_factory_reset);
 #if HASP_USE_SPIFFS > 0 || HASP_USE_LITTLEFS > 0
@@ -1376,11 +1495,17 @@ void dispatchEverySecond()
     if(dispatchSecondsToNextTeleperiod > 1) {
         dispatchSecondsToNextTeleperiod--;
 
+// +AIRQ 4.1
+#if HASP_USE_MQTT > 0
+// -AIRQ 4.1
     } else if(dispatch_setings.teleperiod > 0 && mqttIsConnected()) {
         dispatch_statusupdate(NULL, NULL, TAG_MSGR);
         dispatch_send_discovery(NULL, NULL, TAG_MSGR);
         dispatch_send_sensordata(NULL, NULL, TAG_MSGR);
         dispatchSecondsToNextTeleperiod = dispatch_setings.teleperiod;
+// +AIRQ 4.1
+#endif
+// -AIRQ 4.1
     }
 }
 #else

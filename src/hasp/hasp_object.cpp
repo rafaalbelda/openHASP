@@ -16,6 +16,9 @@
 #endif
 
 #include "hasplib.h"
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 const char** btnmatrix_default_map;            // memory pointer to lvgl default btnmatrix map
 const char* msgbox_default_map[] = {"OK", ""}; // memory pointer to hasp default msgbox map
@@ -717,3 +720,7 @@ void hasp_new_object(const JsonObject& config, uint8_t& saved_page_id)
 
     hasp_parse_json_attributes(obj, config);
 }
+
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI

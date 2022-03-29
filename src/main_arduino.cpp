@@ -59,9 +59,18 @@ void setup()
 #if HASP_USE_CONFIG > 0
     configSetup(); // also runs  debugSetup(), debugStart() and consoleSetup()
 #endif
+// +AIRQ
+    Log.setLevel(0, LOG_LEVEL_OUTPUT);
+
 
     dispatchSetup(); // before hasp and oobe, asap after logging starts
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     guiSetup();
+// +AIRQ 1.3 - remove GUI
+#endif
+// -AIRQ 1.3 - remove GUI
 
 #if HASP_USE_CONFIG > 0
     if(!oobeSetup())
@@ -125,7 +134,13 @@ void setup()
 
 IRAM_ATTR void loop()
 {
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     guiLoop();
+// +AIRQ 1.3 - remove GUI
+#endif
+// -AIRQ 1.3 - remove GUI
     // haspLoop();
 
     networkLoop();

@@ -2,7 +2,13 @@
    For full license information read the LICENSE file in the project folder */
 
 #include "hasplib.h"
+<<<<<<< Updated upstream
 
+=======
+// +AIRQ 1.3 - Remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI
+>>>>>>> Stashed changes
 #include <fstream>
 
 #if defined(ARDUINO)
@@ -271,3 +277,7 @@ bool Page::get_id(const lv_obj_t* obj, uint8_t* pageid)
 } // namespace hasp
 
 hasp::Page haspPages;
+
+// +AIRQ 1.3 - Remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - Remove GUI

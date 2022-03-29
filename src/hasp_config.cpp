@@ -26,7 +26,13 @@
 extern uint16_t dispatchTelePeriod;
 extern uint32_t dispatchLastMillis;
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 extern gui_conf_t gui_settings;
+// +AIRQ 1.3 - remove GUI
+#endif
+// -AIRQ 1.3 - remove GUI
 extern dispatch_conf_t dispatch_settings;
 
 void confDebugSet(const __FlashStringHelper* fstr_name)
@@ -338,6 +344,9 @@ void configWrite()
         writefile = true;
     }
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
     if(settings[FPSTR(FP_GUI)].as<JsonObject>().isNull()) settings.createNestedObject(FPSTR(FP_GUI));
     changed = guiGetConfig(settings[FPSTR(FP_GUI)]);
     if(changed) {
@@ -345,6 +354,9 @@ void configWrite()
         configOutput(settings[FPSTR(FP_GUI)], TAG_GUI);
         writefile = true;
     }
+// +AIRQ 1.3 - remove GUI
+#endif
+// -AIRQ 1.3 - remove GUI
 
     if(settings[FPSTR(FP_HASP)].as<JsonObject>().isNull()) settings.createNestedObject(FPSTR(FP_HASP));
     changed = haspGetConfig(settings[FPSTR(FP_HASP)]);
@@ -434,8 +446,14 @@ void configSetup()
         //#if HASP_USE_SPIFFS > 0
         LOG_INFO(TAG_DEBG, F("Loading debug settings"));
         debugSetConfig(settings[FPSTR(FP_DEBUG)]);
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI    
         LOG_INFO(TAG_GPIO, F("Loading GUI settings"));
         guiSetConfig(settings[FPSTR(FP_GUI)]);
+// +AIRQ 1.3 - remove GUI
+#endif
+// -AIRQ 1.3 - remove GUI
         LOG_INFO(TAG_HASP, F("Loading HASP settings"));
         haspSetConfig(settings[FPSTR(FP_HASP)]);
         // otaGetConfig(settings[F("ota")]);

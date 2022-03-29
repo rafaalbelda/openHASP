@@ -187,6 +187,9 @@ int Parser::format_bytes(size_t filesize, char* buf, size_t len)
                       filesize % 100);
 }
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 uint8_t Parser::get_action_id(const char* action)
 {
     if(!strcasecmp_P(action, PSTR("prev"))) {
@@ -203,6 +206,9 @@ uint8_t Parser::get_action_id(const char* action)
     }
     return 0;
 }
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 #ifndef ARDUINO
 long map(long x, long in_min, long in_max, long out_min, long out_max)

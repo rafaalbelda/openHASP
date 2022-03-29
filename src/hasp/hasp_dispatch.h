@@ -55,19 +55,37 @@ void dispatch_parse_jsonl(Stream& stream, uint8_t& saved_page_id);
 void dispatch_parse_jsonl(std::istream& stream, uint8_t& saved_page_id);
 #endif
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 void dispatch_clear_page(const char* page);
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 void dispatch_json_error(uint8_t tag, DeserializationError& jsonError);
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 void dispatch_set_page(uint8_t pageid, lv_scr_load_anim_t effectid);
 void dispatch_page_next(lv_scr_load_anim_t effectid);
 void dispatch_page_prev(lv_scr_load_anim_t effectid);
 void dispatch_page_back(lv_scr_load_anim_t effectid);
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 bool dispatch_factory_reset();
 void dispatch_reboot(bool saveConfig);
 void dispatch_current_state(uint8_t source);
 void dispatch_current_page();
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 void dispatch_backlight(const char*, const char* payload, uint8_t source);
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 void dispatch_web_update(const char*, const char* espOtaUrl, uint8_t source);
 void dispatch_statusupdate(const char*, const char*, uint8_t source);
 void dispatch_send_discovery(const char*, const char*, uint8_t source);
@@ -79,7 +97,13 @@ void dispatch_wakeup(const char*, const char*, uint8_t source);
 void dispatch_exec(const char*, const char* payload, uint8_t source);
 void dispatch_config(const char* topic, const char* payload, uint8_t source);
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 void dispatch_normalized_group_values(hasp_update_value_t& value);
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 void dispatch_state_subtopic(const char* subtopic, const char* payload);
 void dispatch_state_eventid(const char* topic, hasp_event_t eventid);

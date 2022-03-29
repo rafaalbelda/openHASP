@@ -61,19 +61,34 @@ bool haspGetConfig(const JsonObject& settings);
 bool haspSetConfig(const JsonObject& settings);
 #endif
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 lv_font_t* hasp_get_font(uint8_t fontid);
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 HASP_ATTRIBUTE_FAST_MEM void hasp_update_sleep_state();
 void hasp_get_sleep_state(char* payload);
 void hasp_set_sleep_state(uint8_t state);
 void hasp_get_sleep_time(uint16_t& short_time, uint16_t& long_time);
 void hasp_set_sleep_time(uint16_t short_time, uint16_t long_time);
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 void hasp_set_wakeup_touch(bool en);
 void hasp_set_antiburn(int32_t repeat_count,uint32_t period);
 hasp_event_t hasp_get_antiburn();
 
 void hasp_init(void);
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 void hasp_load_json(void);
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 void hasp_get_info(JsonDocument& info);
 void hasp_set_theme(uint8_t themeid);
@@ -88,9 +103,15 @@ void hasp_set_theme(uint8_t themeid);
 } /* extern "C" */
 #endif
 
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 void haspProgressMsg(const char* msg);
 #ifdef ARDUINO
 void haspProgressMsg(const __FlashStringHelper* msg);
 #endif
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 #endif /*HASP_H*/

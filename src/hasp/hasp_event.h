@@ -6,6 +6,9 @@
 
 #include "lvgl.h"
 #include "hasp_conf.h"
+// +AIRQ 1.3 - remove GUI
+#if HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
 
 #define HASP_NUM_PAGE_PREV (HASP_NUM_PAGES + 1)
 #define HASP_NUM_PAGE_BACK (HASP_NUM_PAGES + 2)
@@ -28,7 +31,13 @@ void cpicker_event_handler(lv_obj_t* obj, lv_event_t event);
 void calendar_event_handler(lv_obj_t* obj, lv_event_t event);
 void textarea_event_handler(lv_obj_t* obj, lv_event_t event);
 
+<<<<<<< Updated upstream
 // Other functions
 void event_reset_last_value_sent();
 
+=======
+// +AIRQ 1.3 - remove GUI
+#endif // HASP_USE_GUI > 0
+// -AIRQ 1.3 - remove GUI
+>>>>>>> Stashed changes
 #endif // HASP_EVENT_H
